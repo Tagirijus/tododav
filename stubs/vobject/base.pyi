@@ -1,5 +1,5 @@
-from typing import Any
+from vobject.icalendar import RecurringComponent
 
 
 class VBase:
-    vtodo: Any
+    vtodo: RecurringComponent
