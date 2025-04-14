@@ -10,6 +10,7 @@ find more intuitive to use.
 from caldav.objects import Todo
 
 from datetime import date, datetime
+from dateutil import tz
 
 
 class TodoFacade:
@@ -22,9 +23,19 @@ class TodoFacade:
         Args:
             caldav_todo (Todo): A caldav Todo instance.
         '''
-        self.todo = caldav_todo.vobject_instance.vtodo
-        self.ical = caldav_todo.icalendar_component
         self.caldav_todo = caldav_todo
+
+    @property
+    def ical(self):
+        return self.caldav_todo.icalendar_component
+
+    @property
+    def vtodo(self):
+        return self.caldav_todo.vobject_instance.vtodo
+
+    @property
+    def vobject(self):
+        return self.caldav_todo.vobject_instance
 
     def add_tag(self, tag: str = ''):
         """
@@ -34,7 +45,20 @@ class TodoFacade:
             tag (str): The tag string. (default: `''`)
         """
         if tag:
-            self.todo.categories.value.append(tag)
+            self.vtodo.categories.value.append(tag)
+
+    def get_due(self) -> object:
+        '''
+        Get the due date, datetime or None.
+
+        Returns:
+            object: Returns the due date of the todo.
+        '''
+        # return self.caldav_todo.vobject_instance.vtodo.due.value
+        if 'DUE' in self.ical:
+            return self.vtodo.due.value
+        else:
+            return None
 
     def get_tags(self) -> list:
         """
@@ -43,19 +67,10 @@ class TodoFacade:
         Return:
             list: The list with the tags.
         """
-        if self.ical.get('CATEGORIES') is not None:
-            return list(self.ical.get('CATEGORIES'))
+        if self.vtodo.categories.value is not None:
+            return self.vtodo.categories.value
         else:
             return []
-
-    def get_vtodo(self) -> Todo:
-        """
-        Return the VTODO object.
-
-        Return:
-            Todo: The original (or now modified) VTODO object.
-        """
-        return self.caldav_todo
 
     def remove_tag(self, tag: str = ''):
         """
@@ -64,10 +79,8 @@ class TodoFacade:
         Args:
             tag (str): The tag string. (default: `''`)
         """
-        if self.ical.get('CATEGORIES') is not None:
-            self.ical['CATEGORIES'] = [
-                x for x in list(self.ical.get('CATEGORIES')) if x != tag
-            ]
+        if self.vtodo.categories.value is not None:
+            self.vtodo.categories.value.remove(tag)
 
     def set_due(self, due: date | datetime | None = None):
         """
@@ -79,12 +92,9 @@ class TodoFacade:
                 Set the due date with a date, datetime \
                 or even None to remove it. (default: `None`)
         """
-        if due is None:
-            self.todo.pop('due')
-        elif isinstance(due, date):
-            # date
-            # WEITER HIER
-            pass
+        if 'DUE' in self.ical:
+            self.ical.pop('DUE')
+        if isinstance(due, date):
+            self.ical.add('DUE', due)
         elif isinstance(due, datetime):
-            # datetime
-            pass
+            self.ical.add('DUE', due.replace(tzinfo=tz.tzlocal()))

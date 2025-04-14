@@ -35,35 +35,36 @@ def test_todo_facade_tags():
     todo = Todo(data=test_vtodo)
     todo_facade = TodoFacade(todo)
 
-    # test, of the given parameter was set internally correctly
-    assert todo == todo_facade.get_vtodo()
-
     # tags list should be the same
     # also I am getting the list not with icalendar_component
     # here, but with vobject_instance, which also checks if
     # the whole integrity internally still consists
     todo_tags = todo.vobject_instance.vtodo.categories.value
     assert todo_tags == todo_facade.get_tags()
+    assert todo_tags == ['tag1', 'tag2']
 
     # even after adding a tag
     todo_facade.add_tag('tag3')
     assert todo_tags == todo_facade.get_tags()
+    assert todo_tags == ['tag1', 'tag2', 'tag3']
 
     # or removing a tag
     todo_facade.remove_tag('tag3')
     assert todo_tags == todo_facade.get_tags()
+    assert todo_tags == ['tag1', 'tag2']
 
-    # DEBUG
-    # change due date
-    new_due = datetime.datetime(2025, 4, 20, 9, 30)
+    # change due date to date
+    new_due_date = datetime.date(2025, 4, 21)
+    todo_facade.set_due(new_due_date)
+    assert todo_facade.get_due() == todo.vobject_instance.vtodo.due.value
+    assert todo_facade.get_due() == new_due_date
 
-    from icalendar import vDatetime
-    # Ersetze das DUE-Feld durch ein vDatetime-Objekt
-    todo.icalendar_component["DUE"] = vDatetime(new_due)
-    # Optional: Entferne ggf. explizit den VALUE-Parameter, der einen DATE-Typ erzwingt:
-    if "VALUE" in todo.icalendar_component["DUE"].params:
-        if todo.icalendar_component["DUE"].params["VALUE"].upper() == "DATE":
-            del todo.icalendar_component["DUE"].params["VALUE"]
+    # change due date to datetime
+    new_due_datetime = datetime.datetime(2025, 4, 20, 9, 30)
+    todo_facade.set_due(new_due_datetime)
+    assert todo_facade.get_due() == todo.vobject_instance.vtodo.due.value
+    assert todo_facade.get_due() == new_due_datetime
 
-    print(todo_facade.ical.to_ical())
-    assert False
+    # remove date / datetime
+    todo_facade.set_due(None)  # can also just be .set_due()
+    assert todo_facade.get_due() is None
