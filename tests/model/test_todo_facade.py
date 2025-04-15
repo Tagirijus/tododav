@@ -1,4 +1,5 @@
-from todomanager.model.todo.todo_facade import Todo, TodoFacade
+from todomanager.model.todo.todo_facade import TodoFacade
+from caldav.objects import Todo
 
 import datetime
 
