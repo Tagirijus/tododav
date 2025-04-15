@@ -3,37 +3,21 @@ from caldav.objects import Todo
 
 import datetime
 
-test_vtodo = """
-BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Nextcloud Tasks v0.16.1
-BEGIN:VTODO
-CATEGORIES:tag1,tag2
-CREATED:20250404T143018Z
-DTSTAMP:20250405T054613Z
-DUE;VALUE=DATE:20250407
-LAST-MODIFIED:20250405T054613Z
-SUMMARY:a test task
-UID:93cf66e2-9a70-4a7b-b350-0feddb9cf37c
-END:VTODO
-END:VCALENDAR
-"""
 
-
-def test_todo_facade_init():
+def test_todo_facade_init(todos_as_strings_in_list):
     '''
     Testing the initialization of a TodoFacade.
     '''
-    todo = Todo(data=test_vtodo)
+    todo = Todo(data=todos_as_strings_in_list[0])
     todo_facade = TodoFacade(todo)
     assert todo_facade.caldav_todo == todo
 
 
-def test_todo_facade_tags():
+def test_todo_facade_tags(todos_as_strings_in_list):
     '''
     Testing the handling of tags for a task.
     '''
-    todo = Todo(data=test_vtodo)
+    todo = Todo(data=todos_as_strings_in_list[0])
     todo_facade = TodoFacade(todo)
 
     # tags list should be the same
