@@ -4,7 +4,7 @@ TodoRepository class.
 A repository which can get Todo objects (as TodoFacade) and manage them.
 '''
 
-from tododav.model import config
+from tododav.model.config import Config
 from tododav.model.todo.todo_facade import TodoFacade
 
 from caldav.objects import Todo
@@ -40,12 +40,13 @@ class TodoRepository:
         Returns:
             dict: Returns the config as a dict.
         '''
+        config = Config()
         out = {
-            'NC_URI': config_dict.get('NC_URI', config.NC_URI),
-            'NC_USER': config_dict.get('NC_USER', config.NC_USER),
-            'NC_PASSWORD': config_dict.get('NC_PASSWORD', config.NC_PASSWORD),
-            'NC_CALENDAR': config_dict.get('NC_CALENDAR', config.NC_CALENDAR),
-            'NC_TAGS': config_dict.get('NC_TAGS', config.NC_TAGS)
+            'NC_URI': config_dict.get('NC_URI', config.get('NC_URI')),
+            'NC_USER': config_dict.get('NC_USER', config.get('NC_USER')),
+            'NC_PASSWORD': config_dict.get('NC_PASSWORD', config.get('NC_PASSWORD')),
+            'NC_CALENDAR': config_dict.get('NC_CALENDAR', config.get('NC_CALENDAR')),
+            'NC_TAGS': config_dict.get('NC_TAGS', config.get('NC_TAGS'))
         }
         return out
 
