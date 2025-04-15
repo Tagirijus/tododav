@@ -21,18 +21,18 @@ END:VCALENDAR
 
 
 def test_todo_facade_init():
-    """
+    '''
     Testing the initialization of a TodoFacade.
-    """
+    '''
     todo = Todo(data=test_vtodo)
     todo_facade = TodoFacade(todo)
     assert todo_facade.caldav_todo == todo
 
 
 def test_todo_facade_tags():
-    """
+    '''
     Testing the handling of tags for a task.
-    """
+    '''
     todo = Todo(data=test_vtodo)
     todo_facade = TodoFacade(todo)
 
