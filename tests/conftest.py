@@ -1,3 +1,5 @@
+from caldav.objects import Todo
+
 import pytest
 import os
 
@@ -67,7 +69,7 @@ def test_temp_file():
 
 
 @pytest.fixture
-def todos_as_strings_in_list():
+def todos_as_strings_in_list() -> list[str]:
     return [
         """
 BEGIN:VCALENDAR
@@ -112,3 +114,11 @@ END:VTODO
 END:VCALENDAR
 """,
     ]
+
+
+@pytest.fixture
+def todos_as_todo_in_list(todos_as_strings_in_list) -> list[Todo]:
+    out = []
+    for todo_str in todos_as_strings_in_list:
+        out.append(Todo(data=todo_str))
+    return out
