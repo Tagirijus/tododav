@@ -1,4 +1,4 @@
-from todomanager.model.todo.todo_repository import TodoRepository
+from tododav.model.todo.todo_repository import TodoRepository
 
 
 def test_todo_repository_init(todos_as_todo_in_list):
