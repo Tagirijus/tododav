@@ -4,8 +4,8 @@ TodoRepository class.
 A repository which can get Todo objects (as TodoFacade) and manage them.
 '''
 
-from todomanager.model import config
-from todomanager.model.todo.todo_facade import TodoFacade
+from tododav.model import config
+from tododav.model.todo.todo_facade import TodoFacade
 
 from caldav.objects import Todo
 
