@@ -4,17 +4,15 @@ from setuptools import setup
 from setuptools import find_packages
 
 _ = setup(
-    name='todomanager',
-    version='0.0.0',
+    name='tododav',
+    version='0.0.1',
     author='Manuel Senfft',
     author_email='info@tagirijus.de',
-    description='Simple program and website for managing NextCloud tasks',
+    description='A CalDAV VTODO abstraction layer module.',
     license='MIT',
-    keywords='nextcloud tasks todo planner planning',
+    keywords='nextcloud tasks todo',
     packages=find_packages(),
     install_requires=[
-        # 'click~=8.1',
-        # 'rich~=13.7',
-        # 'PyYaml~=6.0',
+        'caldav~=1.4.0'
     ],
 )
