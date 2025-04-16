@@ -49,9 +49,9 @@ class TodoFacade:
         if self.has_tags():
             str_list.append('tags=[{}]'.format(','.join(self.get_tags())))
 
-        data = ', '.join(str_list)
+        data = (': ' if str_list else '') + ', '.join(str_list)
 
-        return f'{summary}: {data}'
+        return f'{summary}{data}'
 
     def __repr__(self) -> str:
         '''
