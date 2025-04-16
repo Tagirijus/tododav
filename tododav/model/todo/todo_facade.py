@@ -32,28 +32,35 @@ class TodoFacade:
         ATTENTION: If I change the format, I should also change the
         tests for this class accordingly!
         '''
+        str_list = []
+
         summary = self.get_summary()
 
         if self.has_due():
-            due = 'due=' + (
+            str_list.append('due=' + (
                 self.get_due().strftime('%Y-%m-%d %H:%M')
                 if isinstance(self.get_due(), datetime)
                 else self.get_due().strftime('%Y-%m-%d')
-            )
-        else:
-            due = ''
+            ))
 
         if self.has_priority():
-            priority = ', priority=' + str(self.get_priority())
-        else:
-            priority = ''
+            str_list.append('priority=' + str(self.get_priority()))
 
         if self.has_tags():
-            tags = ', tags=[{}]'.format(','.join(self.get_tags()))
-        else:
-            tags = ''
+            str_list.append('tags=[{}]'.format(','.join(self.get_tags())))
 
-        return f'{summary}: {due}{priority}{tags}'
+        data = ', '.join(str_list)
+
+        return f'{summary}: {data}'
+
+    def __repr__(self) -> str:
+        '''
+        The representation should be the class name and the __str__ output.
+
+        Returns:
+            str: The representation of the class.
+        '''
+        return f'{self.__class__.__name__}: {self.__str__()}'
 
     @property
     def ical(self):
@@ -98,7 +105,7 @@ class TodoFacade:
         Returns:
             int: Returns the priority integer.
         '''
-        if self.vtodo.priority.value is not None:
+        if 'PRIORITY' in self.ical:
             return int(self.vtodo.priority.value)
         else:
             return 0

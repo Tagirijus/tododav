@@ -111,7 +111,7 @@ def test_todo_facade_string_formatting(todos_as_strings_in_list):
     ATTENTION: I might have to change the test, if I change the
     format of the __str__() method.
     '''
-    todo = Todo(data=todos_as_strings_in_list[0])
+    todo = Todo(data=todos_as_strings_in_list[2])
     todo_facade = TodoFacade(todo)
 
     supposed_str = 'a test task: due=2025-04-07, priority=1, tags=[tag1,tag2]'
