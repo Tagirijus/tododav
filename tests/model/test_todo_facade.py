@@ -1,7 +1,7 @@
 from tododav.model.todo.todo_facade import TodoFacade
 from caldav.objects import Todo
 
-import datetime
+from datetime import date, datetime
 
 
 def test_todo_facade_init(todos_as_strings_in_list):
@@ -38,18 +38,32 @@ def test_todo_facade_tags(todos_as_strings_in_list):
     assert todo_tags == todo_facade.get_tags()
     assert todo_tags == ['tag1', 'tag2']
 
+
+def test_todo_facade_due_date(todos_as_strings_in_list):
+    '''
+    Testing the handling of due date for a task.
+    '''
+    todo = Todo(data=todos_as_strings_in_list[0])
+    todo_facade = TodoFacade(todo)
+
     # change due date to date
-    new_due_date = datetime.date(2025, 4, 21)
+    new_due_date = date(2025, 4, 21)
     todo_facade.set_due(new_due_date)
     assert todo_facade.get_due() == todo.vobject_instance.vtodo.due.value
     assert todo_facade.get_due() == new_due_date
 
     # change due date to datetime
-    new_due_datetime = datetime.datetime(2025, 4, 20, 9, 30)
+    new_due_datetime = datetime(2025, 4, 20, 9, 30)
     todo_facade.set_due(new_due_datetime)
     assert todo_facade.get_due() == todo.vobject_instance.vtodo.due.value
     assert todo_facade.get_due() == new_due_datetime
 
     # remove date / datetime
     todo_facade.set_due(None)  # can also just be .set_due()
-    assert todo_facade.get_due() is None
+    assert todo_facade.has_due() is False
+    # get_due() still returns the actual datetime, if there is no DUE!
+    # and since the milliseconds won't be the same when comparing, I
+    # strip it down to a comparible string instead here.
+    todos_none_due_date_str = todo_facade.get_due().strftime('%Y-%m-%d %H:%M')
+    now_date_str = datetime.now().strftime('%Y-%m-%d %H:%M')
+    assert todos_none_due_date_str == now_date_str

@@ -47,18 +47,31 @@ class TodoFacade:
         if tag:
             self.vtodo.categories.value.append(tag)
 
-    def get_due(self) -> object:
+    def get_due(self) -> date | datetime:
         '''
-        Get the due date, datetime or None.
+        Get the due date or datetime. Returns the today datetime,
+        if there is no due date / datetime.
 
         Returns:
-            object: Returns the due date of the todo.
+            date | datetime: Returns the due date of the todo.
         '''
         # return self.caldav_todo.vobject_instance.vtodo.due.value
         if 'DUE' in self.ical:
             return self.vtodo.due.value
         else:
-            return None
+            return datetime.now()
+
+    def get_summary(self) -> str:
+        '''
+        Get the summary string of the VTODO.
+
+        Returns:
+            str: Returns the summary string.
+        '''
+        if self.vtodo.summary.value is not None:
+            return self.vtodo.summary.value
+        else:
+            return ''
 
     def get_tags(self) -> list:
         """
@@ -71,6 +84,15 @@ class TodoFacade:
             return self.vtodo.categories.value
         else:
             return []
+
+    def has_due(self) -> bool:
+        '''
+        Returns if the VTODO has a DUE value after all.
+
+        Returns:
+            bool: Returns True if there is a DUE value.
+        '''
+        return 'DUE' in self.ical
 
     def remove_tag(self, tag: str = ''):
         """
