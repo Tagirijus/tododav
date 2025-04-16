@@ -49,6 +49,30 @@ class TodoRepository:
         ]
         return out
 
+    def filter_by_tags(
+        self,
+        tags: str | list = '',
+        exclude: bool = False
+    ) -> 'TodoRepository':
+        '''
+        Filter by todos, which contain the given tag / tags, or do not
+        contain them (if exclude is True).
+
+        Args:
+            tags (str | list): The tag or tag list to filter on.
+            exclude (bool): Exclude instead of include if True.
+
+        Returns:
+            TodoRepository: Returns a new TodoRepository.
+        '''
+        if isinstance(tags, str):
+            tags = [tags]
+
+        return self.filter(
+            lambda todo: (not exclude) == bool(set(tags) & set(todo.get_tags()))
+
+        )
+
     def get_todos(self) -> list[TodoFacade]:
         '''
         Get the list of TodoFacade instances.
