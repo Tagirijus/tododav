@@ -84,6 +84,12 @@ class TodoFacade:
         if tag:
             self.vtodo.categories.value.append(tag)
 
+    def delete(self):
+        '''
+        Deletes this task.
+        '''
+        self.caldav_todo.delete()
+
     def get_due(self) -> date | datetime:
         '''
         Get the due date or datetime. Returns the today datetime,
