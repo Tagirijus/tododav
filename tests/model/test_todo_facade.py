@@ -102,3 +102,24 @@ def test_todo_facade_priority(todos_as_strings_in_list):
     todo_facade.set_priority()
     assert todo_facade.get_priority() == 0
     assert todo_facade.has_priority() is False
+
+
+def test_todo_facade_string_formatting(todos_as_strings_in_list):
+    '''
+    Test if the string representation works properly.
+
+    ATTENTION: I might have to change the test, if I change the
+    format of the __str__() method.
+    '''
+    todo = Todo(data=todos_as_strings_in_list[0])
+    todo_facade = TodoFacade(todo)
+
+    supposed_str = 'a test task: due=2025-04-07, priority=1, tags=[tag1,tag2]'
+    assert str(todo_facade) == supposed_str
+
+    # and another task
+    todo = Todo(data=todos_as_strings_in_list[3])
+    todo_facade = TodoFacade(todo)
+
+    supposed_str = 'the fourth test task: due=2025-05-03 10:45, priority=5, tags=[tag4]'
+    assert str(todo_facade) == supposed_str

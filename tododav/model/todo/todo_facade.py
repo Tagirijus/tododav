@@ -25,6 +25,36 @@ class TodoFacade:
         '''
         self.caldav_todo = caldav_todo
 
+    def __str__(self) -> str:
+        '''
+        The string representation of the TodoFacade instance.
+
+        ATTENTION: If I change the format, I should also change the
+        tests for this class accordingly!
+        '''
+        summary = self.get_summary()
+
+        if self.has_due():
+            due = 'due=' + (
+                self.get_due().strftime('%Y-%m-%d %H:%M')
+                if isinstance(self.get_due(), datetime)
+                else self.get_due().strftime('%Y-%m-%d')
+            )
+        else:
+            due = ''
+
+        if self.has_priority():
+            priority = ', priority=' + str(self.get_priority())
+        else:
+            priority = ''
+
+        if self.has_tags():
+            tags = ', tags=[{}]'.format(','.join(self.get_tags()))
+        else:
+            tags = ''
+
+        return f'{summary}: {due}{priority}{tags}'
+
     @property
     def ical(self):
         return self.caldav_todo.icalendar_component
@@ -114,6 +144,15 @@ class TodoFacade:
             bool: Returns True if there is a PRIORITY value.
         '''
         return self.get_priority() != 0
+
+    def has_tags(self) -> bool:
+        '''
+        Returns if the VTODO has tags (categories).
+
+        Returns:
+            bool: Returns True if it has tags.
+        '''
+        return len(self.get_tags()) != 0
 
     def remove_tag(self, tag: str = ''):
         """
