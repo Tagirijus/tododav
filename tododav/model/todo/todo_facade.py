@@ -129,7 +129,7 @@ class TodoFacade:
         Return:
             list: The list with the tags.
         """
-        if self.vtodo.categories.value is not None:
+        if 'CATEGORIES' in self.ical and self.vtodo.categories.value is not None:
             return self.vtodo.categories.value
         else:
             return []

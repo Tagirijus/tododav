@@ -12,9 +12,10 @@ from tododav.utils import utils
 from typing import Callable
 from datetime import date, datetime
 from dateutil import tz
-from caldav.objects import Todo
+from caldav.objects import Calendar, Todo
 
 import caldav
+import uuid
 
 
 class TodoRepository:
@@ -30,7 +31,50 @@ class TodoRepository:
                 config values. (default: `{}`)
         '''
         self.config = self.init_config(config_dict)
+        self.client = caldav.DAVClient(
+            url=self.config['NC_URI'],
+            username=self.config['NC_USER'],
+            password=self.config['NC_PASSWORD']
+        )
+        self.calendar = None
         self.todos = []
+
+    def add_todo(
+        self,
+        summary: str,
+        due: date | datetime | None = None,
+        priority: int = 0
+    ) -> TodoFacade | None:
+        '''
+        Create and add a new TodoFacade to the internal list and
+        return this TodoFacade as well. Also this method should
+        link the caldav client to the internal Todo object inside
+        the TodoFacade, so that it should be possible to even
+        save this Todo to the calendar as well. And the task will
+        be saved immediately!
+
+        Args:
+            summary (str): \
+                The summary.
+            due (date | datetime | None): \
+                The optional due date. (default: `None`)
+            priority (int): \
+                The optional priority between 0-9. (default: `0`)
+        '''
+        if isinstance(self.calendar, Calendar):
+            new_caldav_todo = self.calendar.save_todo(
+                summary=summary,
+                dtstamp=datetime.now(),
+                due=due,
+                status='NEEDS-ACTION',
+                priority=priority,
+                uid=str(uuid.uuid4())
+            )
+            new_todo_facade = TodoFacade(new_caldav_todo)
+            self.todos.append(new_todo_facade)
+            return new_todo_facade
+        else:
+            return None
 
     def filter(self, filter_func: Callable[[TodoFacade], bool]) -> 'TodoRepository':
         '''
@@ -207,15 +251,11 @@ class TodoRepository:
         '''
         Initialize the repository with the server connection.
         '''
-        with caldav.DAVClient(
-            url=self.config['NC_URI'],
-            username=self.config['NC_USER'],
-            password=self.config['NC_PASSWORD']
-        ) as client:
+        with self.client as client:
             principal = client.principal()
-        calendar = principal.calendar(self.config['NC_CALENDAR'])
+        self.calendar = principal.calendar(self.config['NC_CALENDAR'])
 
-        self.populate_from_todo_list(calendar.todos())
+        self.populate_from_todo_list(self.calendar.todos())
 
     def populate_from_todo_list(self, todo_list: list[Todo]):
         '''
