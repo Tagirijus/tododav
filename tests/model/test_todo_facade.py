@@ -82,3 +82,23 @@ def test_todo_facade_summary(todos_as_strings_in_list):
     # now I am going to change it
     todo_facade.set_summary('a changed test task')
     assert todo_facade.get_summary() == 'a changed test task'
+
+
+def test_todo_facade_priority(todos_as_strings_in_list):
+    '''
+    Test the getting and setting of the priority.
+    '''
+    todo = Todo(data=todos_as_strings_in_list[0])
+    todo_facade = TodoFacade(todo)
+
+    # original test data for the first task should have highest priority of 1
+    assert todo_facade.get_priority() == 1
+
+    # now I am going to change it
+    todo_facade.set_priority(5)
+    assert todo_facade.get_priority() == 5
+
+    # and it can be removed completely by not giving a parameter, or 0
+    todo_facade.set_priority()
+    assert todo_facade.get_priority() == 0
+    assert todo_facade.has_priority() is False

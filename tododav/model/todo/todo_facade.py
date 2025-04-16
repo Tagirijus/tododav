@@ -61,6 +61,18 @@ class TodoFacade:
         else:
             return datetime.now()
 
+    def get_priority(self) -> int:
+        '''
+        Get the priority integer of the VTODO.
+
+        Returns:
+            int: Returns the priority integer.
+        '''
+        if self.vtodo.priority.value is not None:
+            return int(self.vtodo.priority.value)
+        else:
+            return 0
+
     def get_summary(self) -> str:
         '''
         Get the summary string of the VTODO.
@@ -94,6 +106,15 @@ class TodoFacade:
         '''
         return 'DUE' in self.ical
 
+    def has_priority(self) -> bool:
+        '''
+        Returns if the VTODO has a PRIORITY value after all.
+
+        Returns:
+            bool: Returns True if there is a PRIORITY value.
+        '''
+        return self.get_priority() != 0
+
     def remove_tag(self, tag: str = ''):
         """
         Remove a tag.
@@ -120,6 +141,17 @@ class TodoFacade:
             self.ical.add('DUE', due)
         elif isinstance(due, datetime):
             self.ical.add('DUE', due.replace(tzinfo=tz.tzlocal()))
+
+    def set_priority(self, priority: int = 0):
+        '''
+        Change the priority integer of the task. If 0 given, the internal
+        priority will be removed, which is the default of the parameter.
+
+        Args:
+            priority (int): \
+                The new priority. If no parameter is given, it will be removed.
+        '''
+        self.vtodo.priority.value = priority
 
     def set_summary(self, summary: str = ''):
         '''
