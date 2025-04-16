@@ -171,6 +171,19 @@ class TodoFacade:
         if self.vtodo.categories.value is not None:
             self.vtodo.categories.value.remove(tag)
 
+    def save(self) -> bool:
+        '''
+        Save the todo to the CalDAV and return True on success.
+
+        Returns:
+            bool: Returns True on success.
+        '''
+        try:
+            self.caldav_todo.save()
+            return True
+        except Exception as e:
+            return False
+
     def set_due(self, due: date | datetime | None = None):
         """
         Set the due date for the task. Can be set to "None" to
