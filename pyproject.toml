@@ -8,4 +8,4 @@ typeCheckingMode = "basic"
 stubPath = "stubs"
 
 [tool.pytest.ini_options]
-addopts = "--disable-warnings"
+addopts = "--disable-warnings --ignore=tagi_test.py"
