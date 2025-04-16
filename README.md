@@ -1,4 +1,4 @@
-This module is an abstraction layer for _caldav_ and _VTODO_ objects.
+This module is an abstraction layer for the _caldav_ Python module.
 
 # More info
 

@@ -4,5 +4,4 @@
 .eggs*
 build/
 dist/
-config.py
 tagi_test.py

@@ -5,10 +5,10 @@ from setuptools import find_packages
 
 _ = setup(
     name='tododav',
-    version='0.0.1',
+    version='0.0.2',
     author='Manuel Senfft',
     author_email='info@tagirijus.de',
-    description='A CalDAV VTODO abstraction layer module.',
+    description='an abstraction layer for the caldav Python module',
     license='MIT',
     keywords='nextcloud tasks todo',
     packages=find_packages(),
