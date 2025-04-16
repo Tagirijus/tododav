@@ -120,3 +120,12 @@ class TodoFacade:
             self.ical.add('DUE', due)
         elif isinstance(due, datetime):
             self.ical.add('DUE', due.replace(tzinfo=tz.tzlocal()))
+
+    def set_summary(self, summary: str = ''):
+        '''
+        Change the summary text of the task.
+
+        Args:
+            summary (str): The new summary. If no parameter is given, it will be ''.
+        '''
+        self.vtodo.summary.value = summary

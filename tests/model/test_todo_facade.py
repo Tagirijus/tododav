@@ -67,3 +67,18 @@ def test_todo_facade_due_date(todos_as_strings_in_list):
     todos_none_due_date_str = todo_facade.get_due().strftime('%Y-%m-%d %H:%M')
     now_date_str = datetime.now().strftime('%Y-%m-%d %H:%M')
     assert todos_none_due_date_str == now_date_str
+
+
+def test_todo_facade_summary(todos_as_strings_in_list):
+    '''
+    Test the getting and setting of the summary.
+    '''
+    todo = Todo(data=todos_as_strings_in_list[0])
+    todo_facade = TodoFacade(todo)
+
+    # original test data for the first task should have summary "a test task"
+    assert todo_facade.get_summary() == 'a test task'
+
+    # now I am going to change it
+    todo_facade.set_summary('a changed test task')
+    assert todo_facade.get_summary() == 'a changed test task'
