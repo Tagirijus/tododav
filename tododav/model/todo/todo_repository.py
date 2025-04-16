@@ -7,7 +7,11 @@ A repository which can get Todo objects (as TodoFacade) and manage them.
 from tododav.model.config import Config
 from tododav.model.todo.todo_facade import TodoFacade
 
+from tododav.utils import utils
+
 from typing import Callable
+from datetime import date, datetime
+from dateutil import tz
 from caldav.objects import Todo
 
 import caldav
@@ -48,6 +52,101 @@ class TodoRepository:
             todo for todo in self.todos if filter_func(todo)
         ]
         return out
+
+    def filter_by_date(self, datetime_str: str = '') -> 'TodoRepository':
+        '''
+        Filter by the given date / datetime. There can be a date like
+        "YYYY-MM-DD" or "YYYY-MM-DD HH:MM" or "YYYYMMDD" or "YYYYMMDDTHHMMZ".
+
+        If a datetime is given, the time has to be equal as well exactly! Otherwise
+        the check will only check for the day, even if the DUE date of the VTODO
+        would have a time.
+
+        Args:
+            datetime (str): Can be a date or datetime string. (default `''`)
+
+        Returns:
+            TodoRepistory: Returns the new TodoRepository.
+        '''
+        exact_datetime = utils.string_to_datetime(datetime_str)
+        if exact_datetime is not None:
+            # a datetime with just 00:00:00.000 time is basically just a date
+            is_basically_date = (
+                exact_datetime.hour == 0
+                and exact_datetime.minute == 0
+                and exact_datetime.second == 0
+                and exact_datetime.microsecond == 0
+            )
+        else:
+            is_basically_date = False
+
+        def daterange_check(todo: TodoFacade):
+            due_date_tmp = todo.get_due()
+            if (
+                isinstance(due_date_tmp, date)
+                and not isinstance(due_date_tmp, datetime)
+            ):
+                due_date = datetime.combine(due_date_tmp, datetime.min.time())
+            else:
+                due_date = due_date_tmp
+
+            if isinstance(due_date, datetime):
+                due_date = due_date.replace(tzinfo=tz.tzlocal())
+
+            due_date = (
+                due_date if not is_basically_date
+                else due_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            )
+            print(due_date)
+
+            exact_check = (
+                exact_datetime is not None and due_date == exact_datetime
+            ) if exact_datetime is not None else True
+
+            return todo.has_due() and exact_check
+
+        return self.filter(daterange_check)
+
+    def filter_by_daterange(
+        self,
+        start: str = '',
+        end: str = ''
+    ) -> 'TodoRepository':
+        '''
+        Filter by the given time range, given as a string. There can be a start
+        and / or a end date(time) as "YYYY-MM-DD" or "YYYY-MM-DD HH:MM" or
+        "YYYYMMDD" or "YYYYMMDDTHHMMZ".
+
+        Args:
+            start (str): The start date/datetime as a string. (default: `''`)
+            end (str): The end date/datetime as a string. (default: `''`)
+        '''
+        start_datetime = utils.string_to_datetime(start)
+        end_datetime = utils.string_to_datetime(end)
+
+        def daterange_check(todo: TodoFacade):
+            if (
+                isinstance(todo.get_due(), date)
+                and not isinstance(todo.get_due(), datetime)
+            ):
+                due_date = datetime.combine(todo.get_due(), datetime.min.time())
+            else:
+                due_date = todo.get_due()
+
+            if isinstance(due_date, datetime):
+                due_date = due_date.replace(tzinfo=tz.tzlocal())
+
+            start_check = (
+                start_datetime is not None and due_date > start_datetime
+            ) if start_datetime is not None else True
+
+            end_check = (
+                end_datetime is not None and due_date < end_datetime
+            ) if end_datetime is not None else True
+
+            return todo.has_due() and start_check and end_check
+
+        return self.filter(daterange_check)
 
     def filter_by_tags(
         self,
