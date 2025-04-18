@@ -44,7 +44,7 @@ class TodoRepository:
         summary: str,
         due: date | datetime | None = None,
         priority: int = 0
-    ) -> TodoFacade | None:
+    ) -> TodoFacade:
         '''
         Create and add a new TodoFacade to the internal list and
         return this TodoFacade as well. Also this method should
@@ -60,6 +60,9 @@ class TodoRepository:
                 The optional due date. (default: `None`)
             priority (int): \
                 The optional priority between 0-9. (default: `0`)
+
+        Returns:
+            TodoFacade: The newly added TodoFacade.
         '''
         if isinstance(self.calendar, Calendar):
             new_caldav_todo = self.calendar.save_todo(
@@ -74,7 +77,9 @@ class TodoRepository:
             self.todos.append(new_todo_facade)
             return new_todo_facade
         else:
-            return None
+            new_todo_facade = TodoFacade()
+            self.todos.append(new_todo_facade)
+            return new_todo_facade
 
     def add_todo_facade(self, todo_facade: TodoFacade):
         '''
