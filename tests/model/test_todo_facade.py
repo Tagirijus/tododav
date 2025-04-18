@@ -132,3 +132,18 @@ def test_todo_facade_string_formatting(todos_as_strings_in_list):
 
     supposed_str = 'the fourth test task: due=2025-05-03 10:45, priority=5, tags=[tag4]'
     assert str(todo_facade) == supposed_str
+
+
+def test_todo_facade_uid_getter(todos_as_strings_in_list):
+    '''
+    Test the getting and setting of the UID.
+    '''
+    todo = Todo(data=todos_as_strings_in_list[0])
+    todo_facade = TodoFacade(todo)
+
+    # original test data for the first task should have summary "a test task"
+    assert todo_facade.get_uid() == '93cf66e2-9a70-4a7b-b350-0feddb9cf37a'
+
+    # now I am going to change it
+    todo_facade.set_uid('new_id')
+    assert todo_facade.get_uid() == 'new_id'

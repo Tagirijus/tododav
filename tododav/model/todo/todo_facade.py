@@ -149,6 +149,18 @@ END:VCALENDAR
         else:
             return []
 
+    def get_uid(self) -> str:
+        '''
+        Get the UID string of the VTODO.
+
+        Returns:
+            str: Returns the UID string.
+        '''
+        if 'UID' in self.ical and self.vtodo.uid.value is not None:
+            return self.vtodo.uid.value
+        else:
+            return ''
+
     def has_due(self) -> bool:
         '''
         Returns if the VTODO has a DUE value after all.
@@ -235,3 +247,12 @@ END:VCALENDAR
             summary (str): The new summary. If no parameter is given, it will be ''.
         '''
         self.vtodo.summary.value = summary
+
+    def set_uid(self, uid: str = ''):
+        '''
+        Change the uid of the task.
+
+        Args:
+            uid (str): The new uid. If no parameter is given, it will be ''.
+        '''
+        self.vtodo.uid.value = uid
