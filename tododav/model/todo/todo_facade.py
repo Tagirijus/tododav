@@ -93,11 +93,36 @@ END:VCALENDAR
         if tag:
             self.vtodo.categories.value.append(tag)
 
+    def complete(self, completion_date: date | datetime = date.today()):
+        '''
+        This is different from the caldav Todo.complete() method, which will
+        be able to also handle the "rrule" for recurring tasks, I guess.
+        Unfortunately the Todo.complete() method will also directly save
+        the task. I do not want to save it yet, though.
+
+        Args:
+            completion_date (date | datetime): \
+                An optional completion date to use. Default is "today".
+        '''
+        if not self.is_done():
+            self.set_status('COMPLETED')
+            self.set_completed(completion_date)
+
     def delete(self):
         '''
         Deletes this task.
         '''
         self.caldav_todo.delete()
+
+    def get_completed(self) -> datetime | None:
+        '''
+        Get the completed string of the VTODO.
+
+        Returns:
+            date | datetime: Returns the completed string.
+        '''
+        if 'COMPLETED' in self.ical:
+            return self.vtodo.completed.value
 
     def get_due(self) -> date | datetime:
         '''
@@ -124,6 +149,18 @@ END:VCALENDAR
             return int(self.vtodo.priority.value)
         else:
             return 0
+
+    def get_status(self) -> str:
+        '''
+        Get the status string of the VTODO.
+
+        Returns:
+            str: Returns the status string.
+        '''
+        if 'STATUS' in self.ical and self.vtodo.status.value is not None:
+            return self.vtodo.status.value
+        else:
+            return ''
 
     def get_summary(self) -> str:
         '''
@@ -188,6 +225,15 @@ END:VCALENDAR
         '''
         return len(self.get_tags()) != 0
 
+    def is_done(self) -> bool:
+        '''
+        Returns if the task is done or not. Done status is "COMPLETED".
+
+        Returns:
+            bool: Returns True if it is done, False otherwise.
+        '''
+        return self.get_status() == 'COMPLETED'
+
     def remove_tag(self, tag: str = ''):
         """
         Remove a tag.
@@ -211,6 +257,23 @@ END:VCALENDAR
         except Exception as e:
             return False
 
+    def set_completed(self, completed: datetime | None = None):
+        """
+        Set the completed date for the task. Can be set to "None" to
+        remove the completed date.
+
+        Args:
+            completed (datetime | None): \
+                Set the completed date with a datetime \
+                or even None to remove it. (default: `None`)
+        """
+        if 'COMPLETED' in self.ical:
+            self.ical.pop('COMPLETED')
+        if isinstance(completed, datetime):
+            self.ical.add('COMPLETED', completed.replace(tzinfo=tz.tzlocal()))
+        elif hasattr(self.vtodo, 'COMPLETED'):
+            self.vtodo.remove(self.vtodo.completed)
+
     def set_due(self, due: date | datetime | None = None):
         """
         Set the due date for the task. Can be set to "None" to
@@ -223,10 +286,12 @@ END:VCALENDAR
         """
         if 'DUE' in self.ical:
             self.ical.pop('DUE')
-        if isinstance(due, date):
+        if isinstance(due, date) and not isinstance(due, datetime):
             self.ical.add('DUE', due)
         elif isinstance(due, datetime):
             self.ical.add('DUE', due.replace(tzinfo=tz.tzlocal()))
+        elif hasattr(self.vtodo, 'DUE'):
+            self.vtodo.remove(self.vtodo.due)
 
     def set_priority(self, priority: int = 0):
         '''
@@ -238,6 +303,15 @@ END:VCALENDAR
                 The new priority. If no parameter is given, it will be removed.
         '''
         self.vtodo.priority.value = priority
+
+    def set_status(self, status: str = ''):
+        '''
+        Change the status text of the task.
+
+        Args:
+            status (str): The new status. If no parameter is given, it will be ''.
+        '''
+        self.vtodo.status.value = status
 
     def set_summary(self, summary: str = ''):
         '''
@@ -256,3 +330,13 @@ END:VCALENDAR
             uid (str): The new uid. If no parameter is given, it will be ''.
         '''
         self.vtodo.uid.value = uid
+
+    def uncomplete(self):
+        '''
+        This is different from the caldav Todo.uncomplete() method as well.
+        Unfortunately the Todo.uncomplete() method will also directly
+        save the task. I do not want to save it yet, though.
+        '''
+        if self.is_done():
+            self.set_status('NEEDS-ACTION')
+            self.set_completed(None)

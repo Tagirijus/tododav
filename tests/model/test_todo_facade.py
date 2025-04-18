@@ -147,3 +147,21 @@ def test_todo_facade_uid_getter(todos_as_strings_in_list):
     # now I am going to change it
     todo_facade.set_uid('new_id')
     assert todo_facade.get_uid() == 'new_id'
+
+
+def test_todo_facade_completion(todos_as_strings_in_list):
+    '''
+    Test the getting and setting of the status and completion date.
+    '''
+    todo = Todo(data=todos_as_strings_in_list[0])
+    todo_facade = TodoFacade(todo)
+
+    assert todo_facade.is_done() is True
+
+    todo_facade.uncomplete()
+    assert todo_facade.is_done() is False
+
+    todo_facade.complete(datetime(2025, 4, 18))
+    assert todo_facade.is_done() is True
+    assert todo_facade.get_status() == 'COMPLETED'
+    assert todo_facade.get_completed() == datetime(2025, 4, 18)
