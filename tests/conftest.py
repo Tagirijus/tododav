@@ -71,8 +71,7 @@ def test_temp_file():
 @pytest.fixture
 def todos_as_strings_in_list() -> list[str]:
     return [
-        """
-BEGIN:VCALENDAR
+        """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Nextcloud Tasks v0.16.1
 BEGIN:VTODO
@@ -87,8 +86,7 @@ STATUS:COMPLETED
 UID:93cf66e2-9a70-4a7b-b350-0feddb9cf37a
 END:VTODO
 END:VCALENDAR
-""", """
-BEGIN:VCALENDAR
+""", """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Nextcloud Tasks v0.16.1
 BEGIN:VTODO
@@ -102,8 +100,7 @@ SUMMARY:another test task
 UID:93cf66e2-9a70-4a7b-b350-0feddb9cf37b
 END:VTODO
 END:VCALENDAR
-""", """
-BEGIN:VCALENDAR
+""", """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Nextcloud Tasks v0.16.1
 BEGIN:VTODO
@@ -115,8 +112,7 @@ SUMMARY:the third test task
 UID:93cf66e2-9a70-4a7b-b350-0feddb9cf37c
 END:VTODO
 END:VCALENDAR
-""", """
-BEGIN:VCALENDAR
+""", """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Nextcloud Tasks v0.16.1
 BEGIN:VTODO
