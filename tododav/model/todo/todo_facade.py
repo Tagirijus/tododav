@@ -138,29 +138,29 @@ END:VCALENDAR
         else:
             return datetime.now()
 
-    def get_priority(self) -> int:
+    def get_priority(self) -> int | None:
         '''
         Get the priority integer of the VTODO.
 
         Returns:
             int: Returns the priority integer.
         '''
-        if 'PRIORITY' in self.ical:
+        if 'PRIORITY' in self.ical and self.vtodo.priority.value is not None:
             return int(self.vtodo.priority.value)
         else:
-            return 0
+            return None
 
-    def get_status(self) -> str:
+    def get_status(self) -> str | None:
         '''
         Get the status string of the VTODO.
 
         Returns:
             str: Returns the status string.
         '''
-        if 'STATUS' in self.ical and self.vtodo.status.value is not None:
+        if 'STATUS' in self.ical:
             return self.vtodo.status.value
         else:
-            return ''
+            return None
 
     def get_summary(self) -> str | None:
         '''
@@ -214,7 +214,7 @@ END:VCALENDAR
         Returns:
             bool: Returns True if there is a PRIORITY value.
         '''
-        return self.get_priority() != 0
+        return self.get_priority() != 0 and self.get_priority() is not None
 
     def has_tags(self) -> bool:
         '''
@@ -293,25 +293,39 @@ END:VCALENDAR
         elif hasattr(self.vtodo, 'DUE'):
             self.vtodo.remove(self.vtodo.due)
 
-    def set_priority(self, priority: int = 0):
+    def set_priority(self, priority: int | None = None):
         '''
-        Change the priority integer of the task. If 0 given, the internal
+        Change the priority integer of the task. If 0 / None given, the internal
         priority will be removed, which is the default of the parameter.
 
         Args:
-            priority (int): \
+            priority (int | None): \
                 The new priority. If no parameter is given, it will be removed.
         '''
-        self.vtodo.priority.value = priority
+        if 'PRIORITY' in self.ical:
+            if priority is None or priority == 0:
+                self.ical.pop('PRIORITY')
+            else:
+                self.vtodo.priority.value = priority
+        elif priority is not None and priority != 0:
+            self.ical.add('PRIORITY', priority)
 
-    def set_status(self, status: str = ''):
+    def set_status(self, status: str | None = None):
         '''
         Change the status text of the task.
 
         Args:
-            status (str): The new status. If no parameter is given, it will be ''.
+            status (str | None): \
+                The new status. If no parameter is given, it will be None \
+                and thus removed.
         '''
-        self.vtodo.status.value = status
+        if 'STATUS' in self.ical:
+            if status is None:
+                self.ical.pop('STATUS')
+            else:
+                self.vtodo.status.value = status
+        elif status is not None:
+            self.ical.add('STATUS', status)
 
     def set_summary(self, summary: str | None = None):
         '''
@@ -327,7 +341,7 @@ END:VCALENDAR
                 self.ical.pop('SUMMARY')
             else:
                 self.vtodo.summary.value = summary
-        else:
+        elif summary is not None:
             self.ical.add('SUMMARY', summary)
 
     def set_uid(self, uid: str = ''):

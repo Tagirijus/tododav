@@ -15,7 +15,7 @@ def test_todo_facade_init(todos_as_strings_in_list):
     # and an "empty" init
     todo_facade_no_caldav = TodoFacade()
     assert todo_facade_no_caldav.get_summary() is None
-    assert todo_facade_no_caldav.get_priority() == 0
+    assert todo_facade_no_caldav.get_priority() is None
     assert todo_facade_no_caldav.has_tags() is False
     assert todo_facade_no_caldav.get_tags() == []
 
@@ -116,8 +116,15 @@ def test_todo_facade_priority(todos_as_strings_in_list):
 
     # and it can be removed completely by not giving a parameter, or 0
     todo_facade.set_priority()
-    assert todo_facade.get_priority() == 0
+    assert todo_facade.get_priority() is None
     assert todo_facade.has_priority() is False
+
+    # testing with a blank TodoFacade
+    blank_todo_facade = TodoFacade()
+    blank_todo_facade.set_priority(1)
+    assert blank_todo_facade.get_priority() == 1
+    blank_todo_facade.set_priority(None)
+    assert blank_todo_facade.get_priority() is None
 
 
 def test_todo_facade_string_formatting(todos_as_strings_in_list):
@@ -172,3 +179,10 @@ def test_todo_facade_completion(todos_as_strings_in_list):
     assert todo_facade.is_done() is True
     assert todo_facade.get_status() == 'COMPLETED'
     assert todo_facade.get_completed() == datetime(2025, 4, 18)
+
+    # testing with a blank TodoFacade
+    blank_todo_facade = TodoFacade()
+    blank_todo_facade.set_status('COMPLETED')
+    assert blank_todo_facade.get_status() == 'COMPLETED'
+    blank_todo_facade.set_status(None)
+    assert blank_todo_facade.get_status() is None
