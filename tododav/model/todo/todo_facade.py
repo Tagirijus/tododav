@@ -58,6 +58,9 @@ END:VCALENDAR
         if self.has_tags():
             str_list.append('tags=[{}]'.format(','.join(self.get_tags())))
 
+        if self.is_done():
+            str_list.append('DONE')
+
         data = (': ' if str_list else '') + ', '.join(str_list)
 
         return f'{summary}{data}'
