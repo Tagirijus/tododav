@@ -15,7 +15,16 @@ from dateutil import tz
 
 class TodoFacade:
 
-    def __init__(self, caldav_todo: Todo):
+    DEFAULT_TODO = """
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//tododav
+BEGIN:VTODO
+END:VTODO
+END:VCALENDAR
+"""
+
+    def __init__(self, caldav_todo: Todo = Todo(data=DEFAULT_TODO)):
         '''
         A wrapper / facade for the caldav object "Todo" with
         more convenient / intuitive methods.
@@ -123,7 +132,7 @@ class TodoFacade:
         Returns:
             str: Returns the summary string.
         '''
-        if self.vtodo.summary.value is not None:
+        if 'SUMMARY' in self.ical and self.vtodo.summary.value is not None:
             return self.vtodo.summary.value
         else:
             return ''

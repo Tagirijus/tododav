@@ -12,6 +12,13 @@ def test_todo_facade_init(todos_as_strings_in_list):
     todo_facade = TodoFacade(todo)
     assert todo_facade.caldav_todo == todo
 
+    # and an "empty" init
+    todo_facade_no_caldav = TodoFacade()
+    assert todo_facade_no_caldav.get_summary() == ''
+    assert todo_facade_no_caldav.get_priority() == 0
+    assert todo_facade_no_caldav.has_tags() is False
+    assert todo_facade_no_caldav.get_tags() == []
+
 
 def test_todo_facade_tags(todos_as_strings_in_list):
     '''
