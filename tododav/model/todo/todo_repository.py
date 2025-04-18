@@ -76,6 +76,16 @@ class TodoRepository:
         else:
             return None
 
+    def add_todo_facade(self, todo_facade: TodoFacade):
+        '''
+        Simply add a TodoFacade "manually" to the internal list.
+
+        Args:
+            todo_facade (TodoFacade): The TodoFacade to add.
+        '''
+        if todo_facade not in self.todos:
+            self.todos.append(todo_facade)
+
     def filter(self, filter_func: Callable[[TodoFacade], bool]) -> 'TodoRepository':
         '''
         Filter the internal list of TodoFacade objects with a given
