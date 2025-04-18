@@ -2,8 +2,13 @@
 
 The following changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and tries to stick to the [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.9] - 2025-04-18
+### Changed
+- Summary, Priority and Status are now better handled in TodoFacade.
+
+
 ## [0.0.8] - 2025-04-18
-### CHanged
+### Changed
 - TodoRepository.add_todo() now always returns a TodoFacade.
 
 
