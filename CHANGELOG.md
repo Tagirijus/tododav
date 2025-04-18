@@ -2,6 +2,11 @@
 
 The following changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and tries to stick to the [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.6] - 2025-04-18
+### Added
+- TodoFacade can now be added directly "manually" to a TodoRepository.
+
+
 ## [0.0.5] - 2025-04-18
 ### Added
 - TodoFacade can return UID and you can set the UID.
