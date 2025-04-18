@@ -93,7 +93,7 @@ END:VCALENDAR
         if tag:
             self.vtodo.categories.value.append(tag)
 
-    def complete(self, completion_date: date | datetime = date.today()):
+    def complete(self, completion_date: datetime = datetime.now()):
         '''
         This is different from the caldav Todo.complete() method, which will
         be able to also handle the "rrule" for recurring tasks, I guess.
@@ -102,7 +102,7 @@ END:VCALENDAR
 
         Args:
             completion_date (date | datetime): \
-                An optional completion date to use. Default is "today".
+                An optional completion date to use. Default is "now".
         '''
         if not self.is_done():
             self.set_status('COMPLETED')
@@ -162,17 +162,17 @@ END:VCALENDAR
         else:
             return ''
 
-    def get_summary(self) -> str:
+    def get_summary(self) -> str | None:
         '''
         Get the summary string of the VTODO.
 
         Returns:
             str: Returns the summary string.
         '''
-        if 'SUMMARY' in self.ical and self.vtodo.summary.value is not None:
+        if 'SUMMARY' in self.ical:
             return self.vtodo.summary.value
         else:
-            return ''
+            return None
 
     def get_tags(self) -> list:
         """
@@ -254,7 +254,7 @@ END:VCALENDAR
         try:
             self.caldav_todo.save()
             return True
-        except Exception as e:
+        except Exception as _:
             return False
 
     def set_completed(self, completed: datetime | None = None):
@@ -313,14 +313,22 @@ END:VCALENDAR
         '''
         self.vtodo.status.value = status
 
-    def set_summary(self, summary: str = ''):
+    def set_summary(self, summary: str | None = None):
         '''
-        Change the summary text of the task.
+        Change the summary text of the task or remove it with None.
 
         Args:
-            summary (str): The new summary. If no parameter is given, it will be ''.
+            summary (str | none): \
+                The new summary. If no parameter is given, it will be None \
+                and thus removed.
         '''
-        self.vtodo.summary.value = summary
+        if 'SUMMARY' in self.ical:
+            if summary is None:
+                self.ical.pop('SUMMARY')
+            else:
+                self.vtodo.summary.value = summary
+        else:
+            self.ical.add('SUMMARY', summary)
 
     def set_uid(self, uid: str = ''):
         '''

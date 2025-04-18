@@ -14,7 +14,7 @@ def test_todo_facade_init(todos_as_strings_in_list):
 
     # and an "empty" init
     todo_facade_no_caldav = TodoFacade()
-    assert todo_facade_no_caldav.get_summary() == ''
+    assert todo_facade_no_caldav.get_summary() is None
     assert todo_facade_no_caldav.get_priority() == 0
     assert todo_facade_no_caldav.has_tags() is False
     assert todo_facade_no_caldav.get_tags() == []
@@ -91,6 +91,13 @@ def test_todo_facade_summary(todos_as_strings_in_list):
     # now I am going to change it
     todo_facade.set_summary('a changed test task')
     assert todo_facade.get_summary() == 'a changed test task'
+
+    # testing with a blank TodoFacade
+    blank_todo_facade = TodoFacade()
+    blank_todo_facade.set_summary('blank')
+    assert blank_todo_facade.get_summary() == 'blank'
+    blank_todo_facade.set_summary(None)
+    assert blank_todo_facade.get_summary() is None
 
 
 def test_todo_facade_priority(todos_as_strings_in_list):
