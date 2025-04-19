@@ -2,6 +2,11 @@
 
 The following changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and tries to stick to the [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.13] - 2025-04-19
+### Changed
+- Changed how TodoFacade set_priority() will handle "0". Previously it would set "None" internally for that; now it can be the integer "0".
+
+
 ## [0.0.12] - 2025-04-19
 ### Added
 - TodoFacade.set_tags() added to immediately set the tasks tags.
