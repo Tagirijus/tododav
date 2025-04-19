@@ -93,7 +93,7 @@ END:VCALENDAR
         Args:
             tag (str): The tag string. (default: `''`)
         """
-        if tag:
+        if tag and tag not in self.get_tags():
             self.vtodo.categories.value.append(tag)
 
     def complete(self, completion_date: datetime = datetime.now()):
