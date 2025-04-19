@@ -43,7 +43,8 @@ class TodoRepository:
         self,
         summary: str,
         due: date | datetime | None = None,
-        priority: int = 0
+        priority: int = 0,
+        tags: list = []
     ) -> TodoFacade:
         '''
         Create and add a new TodoFacade to the internal list and
@@ -60,6 +61,8 @@ class TodoRepository:
                 The optional due date. (default: `None`)
             priority (int): \
                 The optional priority between 0-9. (default: `0`)
+            tags (list): \
+                A list of tags. (default: `[]`)
 
         Returns:
             TodoFacade: The newly added TodoFacade.
@@ -71,15 +74,23 @@ class TodoRepository:
                 due=due,
                 status='NEEDS-ACTION',
                 priority=priority,
+                categories=','.join(tags),
                 uid=str(uuid.uuid4())
             )
             new_todo_facade = TodoFacade(new_caldav_todo)
             self.todos.append(new_todo_facade)
-            return new_todo_facade
         else:
-            new_todo_facade = TodoFacade()
+            new_todo_facade = TodoFacade(
+                None,
+                summary,
+                due,
+                'NEEDS-ACTION',
+                priority,
+                tags
+            )
             self.todos.append(new_todo_facade)
-            return new_todo_facade
+
+        return new_todo_facade
 
     def add_todo_facade(self, todo_facade: TodoFacade):
         '''

@@ -1,5 +1,7 @@
 from tododav.model.todo.todo_repository import TodoRepository
 
+from datetime import date
+
 
 def test_todo_repository_init(todos_as_todo_in_list):
     '''
@@ -63,3 +65,35 @@ def test_todo_repository_filter(todos_as_todo_in_list):
     # there should be only one task found with the summary "the fourth test task"
     assert len(filtered_d.get_todos()) == 1
     assert filtered_d.get_todos()[0].get_summary() == 'the fourth test task'
+
+
+def test_todo_repository_add_todo():
+    todo_rep = TodoRepository()
+
+    # add two todos
+    added_a = todo_rep.add_todo(
+        'no tags',
+        date(2025, 4, 19),
+        1
+    )
+    added_b = todo_rep.add_todo(
+        'has tags',
+        date(2025, 4, 18),
+        0,
+        ['tag1', 'tag2']
+    )
+
+    assert added_a != added_b
+
+    todos = todo_rep.get_todos()
+    assert todos[0].get_summary() == 'no tags'
+    assert todos[1].get_summary() == 'has tags'
+    assert todos[0].get_due() == date(2025, 4, 19)
+    assert todos[1].get_due() == date(2025, 4, 18)
+    assert todos[0].has_priority() is True
+    assert todos[0].get_priority() == 1
+    assert todos[1].has_priority() is False
+    assert todos[1].get_priority() is None
+    assert todos[0].has_tags() is False
+    assert todos[1].has_tags() is True
+    assert todos[1].get_tags() == ['tag1', 'tag2']

@@ -12,6 +12,8 @@ from caldav.objects import Todo
 from datetime import date, datetime
 from dateutil import tz
 
+import uuid
+
 
 class TodoFacade:
 
@@ -23,15 +25,44 @@ END:VTODO
 END:VCALENDAR
 """
 
-    def __init__(self, caldav_todo: Todo = Todo(data=DEFAULT_TODO)):
+    def __init__(
+        self,
+        caldav_todo: Todo | None = None,
+        summary: str | None = None,
+        due: date | datetime | None = None,
+        status: str | None = None,
+        priority: int = 0,
+        tags: list | None = None
+    ):
         '''
         A wrapper / facade for the caldav object "Todo" with
         more convenient / intuitive methods.
 
+        ATTENTION: All TodoFacade attributes, which could be set with the
+        constructor parameters won't be set / used, if a caldav_todo
+        parameter is given. The logic is: either get all the attributes
+        from the given caldav_todo instance, or otherwise I could set
+        this to None and set all needed attributes manually with this
+        constructor.
+
         Args:
             caldav_todo (Todo): A caldav Todo instance.
+            summary (str | None): The summary / title of the task.
+            due (date | datetime | None): The due date / datetime of the task.
+            status (str | None): The status of the task.
+            priority (int): The priority of the task.
+            tags (list | None): The tags of the task.
         '''
-        self.caldav_todo = caldav_todo
+        if caldav_todo is None:
+            self.caldav_todo = Todo(data=self.DEFAULT_TODO)
+            self.set_summary(summary)
+            self.set_due(due)
+            self.set_status(status)
+            self.set_priority(priority)
+            self.set_tags(tags)
+            self.set_uid(str(uuid.uuid4()))
+        else:
+            self.caldav_todo = caldav_todo
 
     def __str__(self) -> str:
         '''
@@ -360,7 +391,7 @@ END:VCALENDAR
                 self.ical.pop('CATEGORIES')
             else:
                 self.vtodo.categories.value = tags
-        elif tags is not None:
+        elif tags is not None and tags:
             self.ical.add('CATEGORIES', tags)
 
     def set_uid(self, uid: str = ''):
@@ -370,7 +401,10 @@ END:VCALENDAR
         Args:
             uid (str): The new uid. If no parameter is given, it will be ''.
         '''
-        self.vtodo.uid.value = uid
+        if 'UID' in self.ical:
+            self.vtodo.uid.value = uid
+        else:
+            self.ical.add('UID', uid)
 
     def uncomplete(self):
         '''
