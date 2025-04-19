@@ -167,7 +167,6 @@ class TodoRepository:
                 due_date if not is_basically_date
                 else due_date.replace(hour=0, minute=0, second=0, microsecond=0)
             )
-            print(due_date)
 
             exact_check = (
                 exact_datetime is not None and due_date == exact_datetime

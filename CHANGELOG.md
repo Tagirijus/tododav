@@ -5,6 +5,10 @@ The following changelog format is based on [Keep a Changelog](https://keepachang
 ## [0.0.12] - 2025-04-19
 ### Added
 - TodoFacade.set_tags() added to immediately set the tasks tags.
+- TodoFacade can now be instanceiated with its attributes via the constructors parameters.
+- Added a TodoRepository test.
+### Changed
+- Changed a bit how the TodoRepository adds new TodoFacades to the internal list.
 ### Fixed
 - TodoFacade default VTODO string had newline, which could raise icalendar warnings.
 
