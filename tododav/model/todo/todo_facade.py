@@ -15,8 +15,7 @@ from dateutil import tz
 
 class TodoFacade:
 
-    DEFAULT_TODO = """
-BEGIN:VCALENDAR
+    DEFAULT_TODO = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//tododav
 BEGIN:VTODO
@@ -335,7 +334,7 @@ END:VCALENDAR
         Change the summary text of the task or remove it with None.
 
         Args:
-            summary (str | none): \
+            summary (str | None): \
                 The new summary. If no parameter is given, it will be None \
                 and thus removed.
         '''
@@ -346,6 +345,23 @@ END:VCALENDAR
                 self.vtodo.summary.value = summary
         elif summary is not None:
             self.ical.add('SUMMARY', summary)
+
+    def set_tags(self, tags: list | None = None):
+        '''
+        Set the tags (CATEGORIES) of the task immediately or remove them with None.
+
+        Args:
+            tags (list | None): \
+                The new tags list. If no parameter is given, it will be None \
+                and thus removed.
+        '''
+        if 'CATEGORIES' in self.ical:
+            if tags is None:
+                self.ical.pop('CATEGORIES')
+            else:
+                self.vtodo.tags.value = tags
+        elif tags is not None:
+            self.ical.add('CATEGORIES', tags)
 
     def set_uid(self, uid: str = ''):
         '''
