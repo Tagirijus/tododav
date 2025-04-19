@@ -359,7 +359,7 @@ END:VCALENDAR
             if tags is None:
                 self.ical.pop('CATEGORIES')
             else:
-                self.vtodo.tags.value = tags
+                self.vtodo.categories.value = tags
         elif tags is not None:
             self.ical.add('CATEGORIES', tags)
 
