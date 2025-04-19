@@ -2,6 +2,13 @@
 
 The following changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and tries to stick to the [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.12] - 2025-04-19
+### Added
+- TodoFacade.set_tags() added to immediately set the tasks tags.
+### Fixed
+- TodoFacade default VTODO string had newline, which could raise icalendar warnings.
+
+
 ## [0.0.11] - 2025-04-19
 ### Changed
 - TodoFacade.add_tag() prevens now adding the same tag more than once.
