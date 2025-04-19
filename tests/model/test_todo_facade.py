@@ -37,6 +37,8 @@ def test_todo_facade_tags(todos_as_strings_in_list):
 
     # even after adding a tag
     todo_facade.add_tag('tag3')
+    # also adding teh same tag should only work once
+    todo_facade.add_tag('tag3')
     todo_tags = todo.vobject_instance.vtodo.categories.value
     assert todo_tags == todo_facade.get_tags()
     assert todo_tags == ['tag1', 'tag2', 'tag3']
