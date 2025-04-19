@@ -336,7 +336,7 @@ END:VCALENDAR
                 The new priority. If no parameter is given, it will be removed.
         '''
         if 'PRIORITY' in self.ical:
-            if priority is None or priority == 0:
+            if priority is None:
                 self.ical.pop('PRIORITY')
             else:
                 self.vtodo.priority.value = priority
