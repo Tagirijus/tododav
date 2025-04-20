@@ -66,6 +66,14 @@ def test_todo_repository_filter(todos_as_todo_in_list):
     assert len(filtered_d.get_todos()) == 1
     assert filtered_d.get_todos()[0].get_summary() == 'the fourth test task'
 
+    # filter by todo elements with due date betwee 2024-04-08 and 2025-05-02
+    filtered_b = todo_rep.filter_by_daterange(
+        date(2025, 4, 8), date(2025, 5, 2)
+    )
+    # there should be only one task found with the summary "another test task"
+    assert len(filtered_b.get_todos()) == 1
+    assert filtered_b.get_todos()[0].get_summary() == 'another test task'
+
 
 def test_todo_repository_add_todo():
     todo_rep = TodoRepository()

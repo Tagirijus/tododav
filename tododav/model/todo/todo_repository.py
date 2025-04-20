@@ -178,20 +178,32 @@ class TodoRepository:
 
     def filter_by_daterange(
         self,
-        start: str = '',
-        end: str = ''
+        start: str | date | datetime = '',
+        end: str | date | datetime = ''
     ) -> 'TodoRepository':
         '''
-        Filter by the given time range, given as a string. There can be a start
-        and / or a end date(time) as "YYYY-MM-DD" or "YYYY-MM-DD HH:MM" or
-        "YYYYMMDD" or "YYYYMMDDTHHMMZ".
+        Filter by the given time range, given as a string, date or datetime.
+        As a string there can be a start and / or a end date(time) as "YYYY-MM-DD"
+        or "YYYY-MM-DD HH:MM" or "YYYYMMDD" or "YYYYMMDDTHHMMZ".
+
+        The filter logic for start is ">=", while the filter logic for the end is
+        only "<". Not sure why, but it feels intuitive to me.
 
         Args:
-            start (str): The start date/datetime as a string. (default: `''`)
-            end (str): The end date/datetime as a string. (default: `''`)
+            start (str | date | datetime): \
+                The start date/datetime as a string. (default: `''`)
+            end (str | date | datetime): \
+                The end date/datetime as a string. (default: `''`)
         '''
-        start_datetime = utils.string_to_datetime(start)
-        end_datetime = utils.string_to_datetime(end)
+        if isinstance(start, str):
+            start_datetime = utils.string_to_datetime(start)
+        elif isinstance(start, date) and not isinstance(start, datetime):
+            start_datetime = datetime.combine(start, datetime.min.time(), tz.tzlocal())
+
+        if isinstance(end, str):
+            end_datetime = utils.string_to_datetime(end)
+        elif isinstance(end, date) and not isinstance(end, datetime):
+            end_datetime = datetime.combine(end, datetime.max.time(), tz.tzlocal())
 
         def daterange_check(todo: TodoFacade):
             if (
@@ -206,7 +218,7 @@ class TodoRepository:
                 due_date = due_date.replace(tzinfo=tz.tzlocal())
 
             start_check = (
-                start_datetime is not None and due_date > start_datetime
+                start_datetime is not None and due_date >= start_datetime
             ) if start_datetime is not None else True
 
             end_check = (
