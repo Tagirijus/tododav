@@ -277,18 +277,21 @@ END:VCALENDAR
         if self.vtodo.categories.value is not None:
             self.vtodo.categories.value.remove(tag)
 
-    def save(self) -> bool:
+    def save(self) -> tuple[bool, Exception | None]:
         '''
-        Save the todo to the CalDAV and return True on success.
+        Save the todo to the CalDAV and return a tuple with:
+
+        (True, none) on success and
+        (False, Exception) on fail.
 
         Returns:
-            bool: Returns True on success.
+            tuple: Returns success tuple (bool, Exception | None).
         '''
         try:
             self.caldav_todo.save()
-            return True
-        except Exception as _:
-            return False
+            return (True, None)
+        except Exception as e:
+            return (False, e)
 
     def set_completed(self, completed: datetime | None = None):
         """
