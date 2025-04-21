@@ -2,6 +2,11 @@
 
 The following changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and tries to stick to the [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.15] - 2025-04-21
+### Changed
+- TodoFacade.save() now returns tuple `(bool, Exception | None)`.
+
+
 ## [0.0.14] - 2025-04-20
 ### Changed
 - I changed the filter logic of the TodoRepository.filter_by_daterange() to filter the start with the logic `>=` and the end with the logic `<`.
