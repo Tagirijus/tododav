@@ -2,6 +2,11 @@
 
 The following changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and tries to stick to the [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.16] - 2025-04-21
+### Changed
+- Splitted `TodoRepository.init_with_caldav()` into `TodoRepository.connect_calendar()` and `TodoRepository.populate_from_todo_list()`, which now has a default parameter and will (wíthout one given) populate form the online todos, otherwise from the given list.
+
+
 ## [0.0.15] - 2025-04-21
 ### Changed
 - TodoFacade.save() now returns tuple `(bool, Exception | None)`.
