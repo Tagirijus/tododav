@@ -102,6 +102,14 @@ class TodoRepository:
         if todo_facade not in self.todos:
             self.todos.append(todo_facade)
 
+    def connect_calendar(self):
+        '''
+        Connect to the online calendar with the internal config.
+        '''
+        with self.client as client:
+            principal = client.principal()
+        self.calendar = principal.calendar(self.config['NC_CALENDAR'])
+
     def filter(self, filter_func: Callable[[TodoFacade], bool]) -> 'TodoRepository':
         '''
         Filter the internal list of TodoFacade objects with a given
@@ -284,25 +292,26 @@ class TodoRepository:
         }
         return out
 
-    def init_with_caldav(self):
-        '''
-        Initialize the repository with the server connection.
-        '''
-        with self.client as client:
-            principal = client.principal()
-        self.calendar = principal.calendar(self.config['NC_CALENDAR'])
-
-        self.populate_from_todo_list(self.calendar.todos())
-
-    def populate_from_todo_list(self, todo_list: list[Todo]):
+    def populate_from_todo_list(self, todo_list: list[Todo] | None = None) -> bool:
         '''
         Initialize with a given todo list. This method will be used internally
         to initialize with the server connection, but also can be used by
         the tests without the server connection.
 
         Args:
-            todo_list (list[Todo]): A list containing Todo instances.
+            todo_list (list[Todo] | None): A list containing Todo instances.
+
+        Returns:
+            bool: True on success.
         '''
-        self.todos = []
-        for todo in todo_list:
-            self.todos.append(TodoFacade(todo))
+        if todo_list is None:
+            if isinstance(self.calendar, Calendar):
+                todo_list = self.calendar.todos()
+
+        if isinstance(todo_list, list):
+            self.todos = []
+            for todo in todo_list:
+                self.todos.append(TodoFacade(todo))
+            return True
+
+        return False
