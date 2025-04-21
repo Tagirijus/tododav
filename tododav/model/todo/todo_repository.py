@@ -110,11 +110,12 @@ class TodoRepository:
             principal = client.principal()
         self.calendar = principal.calendar(self.config['NC_CALENDAR'])
 
-    def filter(self, filter_func: Callable[[TodoFacade], bool]) -> 'TodoRepository':
+    def filter(self, filter_func: Callable[[TodoFacade], bool]) -> list[TodoFacade]:
         '''
         Filter the internal list of TodoFacade objects with a given
         callable filter function, which gets a TodoFacade as the first
-        parameter and returns a boolean.
+        parameter and returns a boolean. With that filter the internal
+        todos list and reutrn it filtered (in a non-destructive way).
 
         Args:
             filter_func (Callable): \
@@ -123,15 +124,15 @@ class TodoRepository:
                 will be remain in the original list.
 
         Returns:
-            TodoRepository: Returns a new TodoRepository.
+            list[TodoFacade]: Returns a list with TOdoFacade instances.
         '''
-        out = TodoRepository(self.config)
-        out.todos = [
-            todo for todo in self.todos if filter_func(todo)
+        out = self.todos.copy()
+        out = [
+            todo for todo in out if filter_func(todo)
         ]
         return out
 
-    def filter_by_date(self, datetime_str: str = '') -> 'TodoRepository':
+    def filter_by_date(self, datetime_str: str = '') -> list[TodoFacade]:
         '''
         Filter by the given date / datetime. There can be a date like
         "YYYY-MM-DD" or "YYYY-MM-DD HH:MM" or "YYYYMMDD" or "YYYYMMDDTHHMMZ".
@@ -144,7 +145,7 @@ class TodoRepository:
             datetime (str): Can be a date or datetime string. (default `''`)
 
         Returns:
-            TodoRepistory: Returns the new TodoRepository.
+            list[TodoFacade]: Returns a list with TodoFacade instances.
         '''
         exact_datetime = utils.string_to_datetime(datetime_str)
         if exact_datetime is not None:
@@ -188,7 +189,7 @@ class TodoRepository:
         self,
         start: str | date | datetime = '',
         end: str | date | datetime = ''
-    ) -> 'TodoRepository':
+    ) -> list[TodoFacade]:
         '''
         Filter by the given time range, given as a string, date or datetime.
         As a string there can be a start and / or a end date(time) as "YYYY-MM-DD"
@@ -202,6 +203,9 @@ class TodoRepository:
                 The start date/datetime as a string. (default: `''`)
             end (str | date | datetime): \
                 The end date/datetime as a string. (default: `''`)
+
+        Returns:
+            list[TodoFacade]: Returns a list with TodoFacade instances.
         '''
         if isinstance(start, str):
             start_datetime = utils.string_to_datetime(start)
@@ -241,17 +245,18 @@ class TodoRepository:
         self,
         tags: str | list = '',
         exclude: bool = False
-    ) -> 'TodoRepository':
+    ) -> list[TodoFacade]:
         '''
-        Filter by todos, which contain the given tag / tags, or do not
-        contain them (if exclude is True).
+        Filter todos, which contain the given tag / tags, or do not
+        contain them (if exclude is True) and return the list of
+        TodoFaade instances.
 
         Args:
             tags (str | list): The tag or tag list to filter on.
             exclude (bool): Exclude instead of include if True.
 
         Returns:
-            TodoRepository: Returns a new TodoRepository.
+            list[TodoFacade]: Returns a list with TOdoFacade instances.
         '''
         if isinstance(tags, str):
             tags = [tags]
