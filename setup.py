@@ -13,6 +13,7 @@ _ = setup(
     keywords='nextcloud tasks todo',
     packages=find_packages(),
     install_requires=[
-        'caldav~=1.4.0'
+        'caldav~=1.4.0',
+        'PyYAML~=6.0',
     ],
 )
