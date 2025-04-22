@@ -5,7 +5,7 @@ from setuptools import find_packages
 
 _ = setup(
     name='tododav',
-    version='0.0.19',
+    version='0.0.20',
     author='Manuel Senfft',
     author_email='info@tagirijus.de',
     description='an abstraction layer for the caldav Python module',
