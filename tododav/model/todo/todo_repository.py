@@ -37,7 +37,7 @@ class TodoRepository:
             password=self.config['NC_PASSWORD']
         )
         self.calendar = None
-        self.todos = []
+        self.todos: list[TodoFacade] = []
 
     def add_todo(
         self,
@@ -266,6 +266,21 @@ class TodoRepository:
 
         )
 
+    def get_todo_by_uid(self, uid: str) -> TodoFacade | None:
+        '''
+        Get a TodoFacade instance of the internal list by its UID.
+
+        Args:
+            uid (str): The UID so look for.
+
+        Returns:
+            TodoFacade | None: A TodoFacade instance or None, if nothing found.
+        '''
+        for task in self.todos:
+            if task.get_uid() == uid:
+                return task
+        return None
+
     def get_todos(self) -> list[TodoFacade]:
         '''
         Get the list of TodoFacade instances.
@@ -314,7 +329,7 @@ class TodoRepository:
                 todo_list = self.calendar.todos()
 
         if isinstance(todo_list, list):
-            self.todos = []
+            self.todos: list[TodoFacade] = []
             for todo in todo_list:
                 self.todos.append(TodoFacade(todo))
             return True
