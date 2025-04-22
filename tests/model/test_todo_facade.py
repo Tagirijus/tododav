@@ -188,3 +188,9 @@ def test_todo_facade_completion(todos_as_strings_in_list):
     assert blank_todo_facade.get_status() == 'COMPLETED'
     blank_todo_facade.set_status(None)
     assert blank_todo_facade.get_status() is None
+
+
+def test_todo_facade_rrule(todos_as_strings_in_list):
+    todo = Todo(data=todos_as_strings_in_list[3])
+    todo_facade = TodoFacade(todo)
+    assert todo_facade.has_rrule() is True

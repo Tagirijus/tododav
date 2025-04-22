@@ -252,6 +252,15 @@ END:VCALENDAR
         '''
         return self.get_priority() != 0 and self.get_priority() is not None
 
+    def has_rrule(self) -> bool:
+        '''
+        Checks if the VTODO has a RRUL set.
+
+        Returns:
+            bool: True if it has a RRULE.
+        '''
+        return 'RRULE' in self.ical
+
     def has_tags(self) -> bool:
         '''
         Returns if the VTODO has tags (categories).
