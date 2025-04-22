@@ -110,6 +110,23 @@ class TodoRepository:
             principal = client.principal()
         self.calendar = principal.calendar(self.config['NC_CALENDAR'])
 
+    def delete_todo_by_uid(self, uid: str) -> bool:
+        '''
+        Delete an internal TodoFacade by its uid.
+
+        Args:
+            uid (str): the UID of the todo entry.
+
+        Returns:
+            bool: Returns True, if task was found and deleted, otherwise False.
+        '''
+        for i, task in enumerate(self.todos):
+            if task.get_uid() == uid:
+                task.delete()
+                self.todos.pop(i)
+                return True
+        return False
+
     def filter(self, filter_func: Callable[[TodoFacade], bool]) -> list[TodoFacade]:
         '''
         Filter the internal list of TodoFacade objects with a given
