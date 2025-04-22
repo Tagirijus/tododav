@@ -127,7 +127,34 @@ class TodoRepository:
                 return True
         return False
 
-    def filter(self, filter_func: Callable[[TodoFacade], bool]) -> list[TodoFacade]:
+    def get_todo_by_uid(self, uid: str) -> TodoFacade | None:
+        '''
+        Get a TodoFacade instance of the internal list by its UID.
+
+        Args:
+            uid (str): The UID so look for.
+
+        Returns:
+            TodoFacade | None: A TodoFacade instance or None, if nothing found.
+        '''
+        for task in self.todos:
+            if task.get_uid() == uid:
+                return task
+        return None
+
+    def get_todos(self) -> list[TodoFacade]:
+        '''
+        Get the list of TodoFacade instances.
+
+        Returns:
+            list[Todofacades]: Returns the list of TodoFacades.
+        '''
+        return self.todos
+
+    def get_todos_filtered(
+        self,
+        filter_func: Callable[[TodoFacade], bool]
+    ) -> list[TodoFacade]:
         '''
         Filter the internal list of TodoFacade objects with a given
         callable filter function, which gets a TodoFacade as the first
@@ -149,7 +176,7 @@ class TodoRepository:
         ]
         return out
 
-    def filter_by_date(self, datetime_str: str = '') -> list[TodoFacade]:
+    def get_todos_by_date(self, datetime_str: str = '') -> list[TodoFacade]:
         '''
         Filter by the given date / datetime. There can be a date like
         "YYYY-MM-DD" or "YYYY-MM-DD HH:MM" or "YYYYMMDD" or "YYYYMMDDTHHMMZ".
@@ -200,9 +227,9 @@ class TodoRepository:
 
             return todo.has_due() and exact_check
 
-        return self.filter(daterange_check)
+        return self.get_todos_filtered(daterange_check)
 
-    def filter_by_daterange(
+    def get_todos_by_daterange(
         self,
         start: str | date | datetime = '',
         end: str | date | datetime = ''
@@ -256,9 +283,9 @@ class TodoRepository:
 
             return todo.has_due() and start_check and end_check
 
-        return self.filter(daterange_check)
+        return self.get_todos_filtered(daterange_check)
 
-    def filter_by_tags(
+    def get_todos_by_tags(
         self,
         tags: str | list = '',
         exclude: bool = False
@@ -278,34 +305,10 @@ class TodoRepository:
         if isinstance(tags, str):
             tags = [tags]
 
-        return self.filter(
+        return self.get_todos_filtered(
             lambda todo: (not exclude) == bool(set(tags) & set(todo.get_tags()))
 
         )
-
-    def get_todo_by_uid(self, uid: str) -> TodoFacade | None:
-        '''
-        Get a TodoFacade instance of the internal list by its UID.
-
-        Args:
-            uid (str): The UID so look for.
-
-        Returns:
-            TodoFacade | None: A TodoFacade instance or None, if nothing found.
-        '''
-        for task in self.todos:
-            if task.get_uid() == uid:
-                return task
-        return None
-
-    def get_todos(self) -> list[TodoFacade]:
-        '''
-        Get the list of TodoFacade instances.
-
-        Returns:
-            list[Todofacades]: Returns the list of TodoFacades.
-        '''
-        return self.todos
 
     def init_config(self, config_dict: dict = {}) -> dict:
         '''
@@ -346,7 +349,7 @@ class TodoRepository:
                 todo_list = self.calendar.todos()
 
         if isinstance(todo_list, list):
-            self.todos: list[TodoFacade] = []
+            self.todos = []
             for todo in todo_list:
                 self.todos.append(TodoFacade(todo))
             return True

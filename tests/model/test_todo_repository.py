@@ -27,7 +27,7 @@ def test_todo_repository_filter(todos_as_todo_in_list):
     # tags filtering
 
     # filter by todo elements with the tag "tag2"
-    filtered_a = todo_rep.filter_by_tags('tag2')
+    filtered_a = todo_rep.get_todos_by_tags('tag2')
     # there should be two elements
     assert len(filtered_a) == 2
     # deeper tests
@@ -37,7 +37,7 @@ def test_todo_repository_filter(todos_as_todo_in_list):
     assert filtered_a[1].get_summary() == 'the third test task'
 
     # filter by todo elements without the tag "tag1"
-    filtered_a = todo_rep.filter_by_tags('tag1', True)
+    filtered_a = todo_rep.get_todos_by_tags('tag1', True)
     # there should be two elements
     assert len(filtered_a) == 2
     # deeper tests
@@ -49,25 +49,25 @@ def test_todo_repository_filter(todos_as_todo_in_list):
     # date filtering
 
     # filter by todo elements with due date before 2025-04-08
-    filtered_b = todo_rep.filter_by_daterange('', '2025-04-08')
+    filtered_b = todo_rep.get_todos_by_daterange('', '2025-04-08')
     # there should be only one task found with the summary "a test task"
     assert len(filtered_b) == 1
     assert filtered_b[0].get_summary() == 'a test task'
 
     # filter by todo elements with due date on date 2025-05-03
-    filtered_c = todo_rep.filter_by_date('2025-05-03')
+    filtered_c = todo_rep.get_todos_by_date('2025-05-03')
     # there should be only one task found with the summary "the fourth test task"
     assert len(filtered_c) == 1
     assert filtered_c[0].get_summary() == 'the fourth test task'
 
     # filter by todo elements with due date with time as well like "2025-05-03 10:45"
-    filtered_d = todo_rep.filter_by_date('2025-05-03 10:45')
+    filtered_d = todo_rep.get_todos_by_date('2025-05-03 10:45')
     # there should be only one task found with the summary "the fourth test task"
     assert len(filtered_d) == 1
     assert filtered_d[0].get_summary() == 'the fourth test task'
 
     # filter by todo elements with due date betwee 2024-04-08 and 2025-05-02
-    filtered_b = todo_rep.filter_by_daterange(
+    filtered_b = todo_rep.get_todos_by_daterange(
         date(2025, 4, 8), date(2025, 5, 2)
     )
     # there should be only one task found with the summary "another test task"
