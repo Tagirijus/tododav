@@ -2,6 +2,11 @@
 
 The following changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and tries to stick to the [semantic versioning](https://semver.org/spec/v2.0.0.html) (except for the "alpha" phase, were I just use the third number, until I decide a first working and usable version exists).
 
+## [0.0.22] - 2025-04-22
+### Changed
+- Added TodoFacade.has_rrule().
+
+
 ## [0.0.21] - 2025-04-22
 ### Changed
 - Added TodoRepository.delete_todo_by_uid().
