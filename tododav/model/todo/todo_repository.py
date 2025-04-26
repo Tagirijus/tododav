@@ -346,7 +346,7 @@ class TodoRepository:
         '''
         if todo_list is None:
             if isinstance(self.calendar, Calendar):
-                todo_list = self.calendar.todos()
+                todo_list = self.calendar.todos(include_completed=True)
 
         if isinstance(todo_list, list):
             self.todos = []
