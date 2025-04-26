@@ -2,6 +2,11 @@
 
 The following changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and tries to stick to the [semantic versioning](https://semver.org/spec/v2.0.0.html) (except for the "alpha" phase, were I just use the third number, until I decide a first working and usable version exists).
 
+## [0.0.24] - 2025-04-26
+### Changed
+- TodoRepository now includes completed tasks as well.
+
+
 ## [0.0.23] - 2025-04-22
 ### Added
 - Added ciritcla thoughts in my head that this changelog is clever ... I should have completed my other depending project first and make a huge initial "this is it now" commit instead ... oopsie.
