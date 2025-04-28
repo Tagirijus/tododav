@@ -255,11 +255,15 @@ class TodoRepository:
             start_datetime = utils.string_to_datetime(start)
         elif isinstance(start, date) and not isinstance(start, datetime):
             start_datetime = datetime.combine(start, datetime.min.time(), tz.tzlocal())
+        else:
+            start_datetime = start.replace(tzinfo=tz.tzlocal())
 
         if isinstance(end, str):
             end_datetime = utils.string_to_datetime(end)
         elif isinstance(end, date) and not isinstance(end, datetime):
             end_datetime = datetime.combine(end, datetime.max.time(), tz.tzlocal())
+        else:
+            end_datetime = end.replace(tzinfo=tz.tzlocal())
 
         def daterange_check(todo: TodoFacade):
             if (

@@ -1,6 +1,6 @@
 from tododav.model.todo.todo_repository import TodoRepository
 
-from datetime import date
+from datetime import date, datetime
 
 
 def test_todo_repository_init(todos_as_todo_in_list):
@@ -67,12 +67,20 @@ def test_todo_repository_filter(todos_as_todo_in_list):
     assert filtered_d[0].get_summary() == 'the fourth test task'
 
     # filter by todo elements with due date betwee 2024-04-08 and 2025-05-02
-    filtered_b = todo_rep.get_todos_by_daterange(
+    filtered_e = todo_rep.get_todos_by_daterange(
         date(2025, 4, 8), date(2025, 5, 2)
     )
     # there should be only one task found with the summary "another test task"
-    assert len(filtered_b) == 1
-    assert filtered_b[0].get_summary() == 'another test task'
+    assert len(filtered_e) == 1
+    assert filtered_e[0].get_summary() == 'another test task'
+
+    # also try filtering with datetime instances
+    filtered_f = todo_rep.get_todos_by_daterange(
+        datetime(2025, 4, 8, 0, 0, 0), datetime(2025, 4, 8, 23, 59, 59)
+    )
+    # there should be only one task found with the summary "another test task"
+    assert len(filtered_f) == 1
+    assert filtered_f[0].get_summary() == 'another test task'
 
 
 def test_todo_repository_add_todo():
