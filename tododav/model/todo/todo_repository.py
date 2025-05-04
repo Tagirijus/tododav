@@ -10,7 +10,7 @@ from tododav.model.todo.todo_facade import TodoFacade
 from tododav.utils import utils
 
 from typing import Callable
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from dateutil import tz
 from caldav.objects import Calendar, Todo
 
@@ -336,21 +336,45 @@ class TodoRepository:
         }
         return out
 
-    def populate_from_todo_list(self, todo_list: list[Todo] | None = None) -> bool:
+    def populate_from_todo_list(
+        self,
+        todo_list: list[Todo] | None = None,
+        for_todomanager: bool = False,
+        tag: str = ''
+    ) -> bool:
         '''
         Initialize with a given todo list. This method will be used internally
         to initialize with the server connection, but also can be used by
         the tests without the server connection.
 
         Args:
-            todo_list (list[Todo] | None): A list containing Todo instances.
+            todo_list (list[Todo] | None): \
+                A list containing Todo instances.
+            for_todomanager (bool): \
+                If True, the internal filtering will getch only tasks of \
+                the last week and in the next 5 weeks.
+            tag (str): \
+                The tag to filter the todos on.
 
         Returns:
             bool: True on success.
         '''
         if todo_list is None:
             if isinstance(self.calendar, Calendar):
-                todo_list = self.calendar.todos(include_completed=True)
+                if for_todomanager:
+                    now = datetime.now()
+                    start = now - timedelta(weeks=1)
+                    end = now + timedelta(weeks=5)
+
+                    # Todos mit Kategorie 'week' abrufen
+                    todo_list = self.calendar.search(
+                        todo=True,
+                        start=start,
+                        end=end,
+                        category=tag
+                    )
+                else:
+                    todo_list = self.calendar.todos(include_completed=True)
 
         if isinstance(todo_list, list):
             self.todos = []
