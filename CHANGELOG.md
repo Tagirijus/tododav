@@ -2,6 +2,11 @@
 
 The following changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and tries to stick to the [semantic versioning](https://semver.org/spec/v2.0.0.html) (except for the "alpha" phase, were I just use the third number, until I decide a first working and usable version exists).
 
+## [0.1.0] - 2025-05-04
+### Fix
+- TodoRepository.populate_from_todo_list() got some changes, in hope that the task performance for my private TodoManager project will increase.
+
+
 ## [0.0.25] - 2025-04-28
 ### Fix
 - TodoRepository.get_todos_by_daterange() could not use a datetime for filtering.
