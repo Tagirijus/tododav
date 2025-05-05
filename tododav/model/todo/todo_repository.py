@@ -339,8 +339,7 @@ class TodoRepository:
     def populate_from_todo_list(
         self,
         todo_list: list[Todo] | None = None,
-        for_todomanager: bool = False,
-        tag: str = ''
+        future_weeks: int = -1
     ) -> bool:
         '''
         Initialize with a given todo list. This method will be used internally
@@ -350,18 +349,16 @@ class TodoRepository:
         Args:
             todo_list (list[Todo] | None): \
                 A list containing Todo instances.
-            for_todomanager (bool): \
-                If True, the internal filtering will getch only tasks of \
-                the last week and in the next 5 weeks.
-            tag (str): \
-                The tag to filter the todos on.
+            future_weeks (int): \
+                If above -1 this will set how many weeks in the future will be \
+                fetched from the todo repository.
 
         Returns:
             bool: True on success.
         '''
         if todo_list is None:
             if isinstance(self.calendar, Calendar):
-                if for_todomanager:
+                if future_weeks != -1:
                     now = datetime.now()
                     start = now - timedelta(weeks=1)
                     end = now + timedelta(weeks=5)
@@ -370,8 +367,7 @@ class TodoRepository:
                     todo_list = self.calendar.search(
                         todo=True,
                         start=start,
-                        end=end,
-                        category=tag
+                        end=end
                     )
                 else:
                     todo_list = self.calendar.todos(include_completed=True)
